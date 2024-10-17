@@ -1,0 +1,86 @@
+<!-- 3. How to do live stream of camera using java script ? -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Camera Stream</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        #videoElement {
+            width: 100%;
+            max-width: 640px;
+            height: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Camera Stream</h1>
+    <video id="videoElement" autoplay playsinline></video>
+    <div>
+        <button id="startButton">Start Stream</button>
+        <button id="stopButton">Stop Stream</button>
+    </div>
+
+    <script>
+        const videoElement = document.getElementById('videoElement');
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        let stream;
+
+        async function startStream() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'user' // Use 'environment' for rear camera
+                    }, 
+                    audio: false 
+                });
+                videoElement.srcObject = stream;
+                startButton.disabled = true;
+                stopButton.disabled = false;
+            } catch (err) {
+                if (err.name === 'NotAllowedError') {
+                    alert("Camera access denied. Please allow camera access to use this feature.");
+                } else {
+                    alert("An error occurred while trying to access the camera: " + err.message);
+                }
+                console.error("Error accessing the camera:", err);
+            }
+        }
+
+        function stopStream() {
+            if (stream) {
+                const tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+                videoElement.srcObject = null;
+                startButton.disabled = false;
+                stopButton.disabled = true;
+            }
+        }
+
+        startButton.addEventListener('click', startStream);
+        stopButton.addEventListener('click', stopStream);
+
+        // Optional: Start stream automatically when the page loads
+        // window.addEventListener('load', startStream);
+
+        // Ensure stream is stopped when the page is unloaded
+        window.addEventListener('beforeunload', stopStream);
+    </script>
+</body>
+</html>
