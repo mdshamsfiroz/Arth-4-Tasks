@@ -14,7 +14,7 @@ bot = Bot()
 bot.login(username=username, password=password, use_cookie=False, ask_for_code=True)
 
 # Open the image and resize it to a square (1:1) aspect ratio
-image_path = "vimal.jpg" # Use forward slashes in the path
+image_path = "shams.jpg" # Use forward slashes in the path
 image = Image.open(image_path)
 width, height = image.size
 min_dimension = min(width, height)
