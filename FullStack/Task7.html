@@ -1,0 +1,60 @@
+<!-- 7. Write a JavaScript code to drag and drop a division using mouse  -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draggable DIV</title>
+    <style>
+        #draggable {
+            width: 100px;
+            height: 100px;
+            background-color: lightblue;
+            position: absolute;
+            cursor: move;
+            border: 2px solid #000;
+        }
+    </style>
+</head>
+<body>
+
+<div id="draggable">Drag me!</div>
+
+<script>
+    const draggable = document.getElementById('draggable');
+
+    draggable.onmousedown = function(event) {
+        let shiftX = event.clientX - draggable.getBoundingClientRect().left;
+        let shiftY = event.clientY - draggable.getBoundingClientRect().top;
+
+        draggable.style.position = 'absolute';
+        draggable.style.zIndex = 1000;
+
+        document.body.append(draggable);
+
+        moveAt(event.pageX, event.pageY);
+
+        function moveAt(pageX, pageY) {
+            draggable.style.left = pageX - shiftX + 'px';
+            draggable.style.top = pageY - shiftY + 'px';
+        }
+
+        function onMouseMove(event) {
+            moveAt(event.pageX, event.pageY);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+
+        draggable.onmouseup = function() {
+            document.removeEventListener('mousemove', onMouseMove);
+            draggable.onmouseup = null;
+        };
+    };
+
+    draggable.ondragstart = function() {
+        return false; // Prevent default drag behavior
+    };
+</script>
+
+</body>
+</html>
